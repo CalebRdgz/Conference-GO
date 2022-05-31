@@ -48,6 +48,18 @@ class Presentation(models.Model):
         on_delete=models.CASCADE,
     )
 
+    def approve(self):
+        return self.set_status("APPROVED")
+
+    def reject(self):
+        return self.set_status("REJECTED")
+
+    def set_status(self, name):
+        status = Status.objects.get(name=name)
+        self.status = status
+        self.save()
+        return self.status
+
     def get_api_url(self):
         return reverse("api_show_presentation", kwargs={"pk": self.pk})
 
