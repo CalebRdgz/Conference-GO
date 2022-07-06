@@ -1,5 +1,7 @@
 from django.http import JsonResponse
 
+from events.api_views import ConferenceListEncoder
+
 from .models import Presentation
 from common.json import ModelEncoder
 
@@ -12,13 +14,21 @@ class PresentationDetailEncoder(ModelEncoder):
         "presenter_email",
         "title",
         "synopsis",
-        "status",
+        # "status",
+        "conference",
         ]
+    encoders = {"conference": ConferenceListEncoder(),}
+
+    def get_extra_data(self, o):
+        return {"status": o.status.name}
 
 
 class PresentationListEncoder(ModelEncoder):
     model = Presentation
-    properties = ["title"]
+    properties = ["title", "status"]
+
+    def get_extra_data(self, o):
+        return {"status": o.status.name}
 
 
 def api_list_presentations(request, conference_id):
@@ -83,5 +93,5 @@ def api_show_presentation(request, pk):
     return JsonResponse(
         presentation,
         PresentationDetailEncoder,
-        safe=False
+        safe=False,
     )

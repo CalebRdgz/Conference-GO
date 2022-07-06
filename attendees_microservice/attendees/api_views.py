@@ -1,9 +1,18 @@
 from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from .models import Attendee, ConferenceVO
+import json
 
+from common.json import ModelEncoder
 from .models import Attendee
 
+class ConferenceVODetailEncoder(ModelEncoder):
+    model = ConferenceVO
+    properties = ["name", "import_href"]
 
-def api_list_attendees(request, conference_id):
+
+
+def api_list_attendees(request, conference_vo_id=None):
     """
     Lists the attendees names and the link to the attendee
     for the specified conference id.
@@ -23,16 +32,17 @@ def api_list_attendees(request, conference_id):
         ]
     }
     """
-    response = []
-    attendees = Attendee.objects.all()
-    for attendee in attendees:
-        response.append(
-            {
-                "name": attendee.name,
-                "href": attendee.get_api_url(),
-            }
-        )
-    return JsonResponse({"attendees": response})
+    # response = []
+    # attendees = Attendee.objects.all()
+    # for attendee in attendees:
+    #     response.append(
+    #         {
+    #             "name": attendee.name,
+    #             "href": attendee.get_api_url(),
+    #         }
+    #     )
+    # return JsonResponse({"attendees": response})
+    if request.
 
 
 def api_show_attendee(request, pk):
